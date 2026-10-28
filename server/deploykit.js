@@ -223,11 +223,13 @@ if [ -n "$REPO_URL" ]; then
 else
   # Running from inside a checkout: copy everything except local state
   SRC_DIR="$(cd "$(dirname "\${BASH_SOURCE[0]}")/.." && pwd)"
+  # Local state (config, logs, chain data) stays untouched
+  mkdir -p "$APP_DIR/data"
   if [ "$SRC_DIR" != "$APP_DIR" ]; then
     if command -v rsync >/dev/null 2>&1; then
       rsync -a --exclude data --exclude .git "$SRC_DIR"/ "$APP_DIR"/
     else
-      cp -a "$SRC_DIR"/. "$APP_DIR"/ && rm -rf "$APP_DIR/data" "$APP_DIR/.git"
+      cp -a "$SRC_DIR"/. "$APP_DIR"/ && rm -rf "$APP_DIR/.git"
     fi
   fi
 fi
@@ -277,9 +279,20 @@ EOF
 }
 
 function deployReadme(config) {
+  const plan = recommendedPlan(config);
   return `# Deploying the Kaspa Mining Console
 
 Generated ${new Date().toUTCString()} from your current panel configuration.
+
+## Recommended server for this configuration
+
+| Resource | Recommended | Notes |
+| --- | --- | --- |
+| vCPU | **${plan.vcpu}** | ${plan.solo ? 'one core stays free for the node and the panel' : 'miner only, the node runs elsewhere'} |
+| RAM | **${plan.ramGb} GB** | more is fine; trim the node with \`--ram-scale\` |
+| Disk | **${plan.diskGb} GB** | ${plan.solo ? (config.node.archival ? 'archival node keeps every block' : 'pruned node, grows with the DAG') : 'miner needs almost no disk'} |
+| Bandwidth | 10 Mbit+ | open port 16111/tcp for mainnet P2P |
+| Miner threads | **${plan.threads}** | leave one vCPU for the operating system |
 
 | Setting | Value |
 | --- | --- |
@@ -353,6 +366,19 @@ durable and requires no extra service.
 
 const DEFAULT_REPO = process.env.REPO_URL || 'https://github.com/badalworld/kaspa';
 
+/** Recommendation for the requested workload, expressed in generic units. */
+function recommendedPlan(config, port) {
+  const solo = config.mining.mode === 'solo';
+  const threads = Number(config.mining.threads) || Math.max(1, (port ? 4 : 4) - 1);
+  return {
+    solo,
+    vcpu: solo ? 4 : 2,
+    ramGb: solo ? 8 : 2,
+    diskGb: solo ? (config.node.archival ? 600 : 120) : 5,
+    threads: solo ? Math.max(1, 4 - 1) : threads,
+  };
+}
+
 function buildKit(config, { port } = {}) {
   const effectivePort = port || process.env.PANEL_PORT || 8080;
   return [
@@ -366,4 +392,15 @@ function buildKit(config, { port } = {}) {
   ];
 }
 
-module.exports = { buildKit, dockerfile, compose, envFile, systemdUnit, nginxConfig, installScript, deployReadme, DEFAULT_REPO };
+module.exports = {
+  buildKit,
+  dockerfile,
+  compose,
+  envFile,
+  systemdUnit,
+  nginxConfig,
+  installScript,
+  deployReadme,
+  recommendedPlan,
+  DEFAULT_REPO,
+};

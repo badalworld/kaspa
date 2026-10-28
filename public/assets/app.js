@@ -470,7 +470,7 @@ const ICONS = {
   server: '<rect x="2" y="3" width="20" height="7" rx="2"/><rect x="2" y="14" width="20" height="7" rx="2"/><path d="M6 6.5h.01M6 17.5h.01"/>',
   key: '<circle cx="7.5" cy="15.5" r="4.5"/><path d="m11 12 9-9M17 4l3 3M14 7l3 3"/>',
   terminal: '<path d="m4 17 6-6-6-6M12 19h8"/>',
-  ship: '<path d="M3 17c2 1 4 1 6 0s4-1 6 0 4 1 6 0M5 13l7-9 7 9M12 4v9"/>',
+  ship: '<path d="M12 3v10M8 9l4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
   gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/>',
   zap: '<path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/>',
   cpu: '<rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>',
@@ -1677,6 +1677,26 @@ async function mountDeploy(view) {
     state.deploy = data;
     let active = data.files[0]?.name;
     view.innerHTML = `
+      <div class="card">
+        <div class="card-head">
+          <div><div class="card-title">${icon('cpu', 14)} Recommended server for this configuration</div>
+          <div class="card-sub">${data.plan.solo ? 'Solo mode: the node and the miner share this host' : 'Remote/custom mode: only the miner runs here'}</div></div>
+          <span class="pill info">${esc(state.status?.host?.hostname || '')}</span>
+        </div>
+        <div class="grid c4">
+          <div class="stat"><div class="stat-label">vCPU</div><div class="stat-value sm">${data.plan.vcpu}</div>
+            <div class="stat-sub">detected ${data.detected?.[0]?.value ?? '—'}</div></div>
+          <div class="stat"><div class="stat-label">RAM</div><div class="stat-value sm">${data.plan.ramGb} GB</div>
+            <div class="stat-sub">detected ${data.detected?.[1]?.value ?? '—'} GB</div></div>
+          <div class="stat"><div class="stat-label">Disk</div><div class="stat-value sm">${data.plan.diskGb} GB</div>
+            <div class="stat-sub">detected ${data.detected?.[2]?.value ?? '—'} GB free</div></div>
+          <div class="stat"><div class="stat-label">Miner threads</div><div class="stat-value sm">${data.plan.threads}</div>
+            <div class="stat-sub">leave one vCPU for the OS</div></div>
+        </div>
+        <p class="form-note mt-14">Ports: <span class="mono">${data.port}</span> (panel), <span class="mono">16111</span> (mainnet P2P),
+        <span class="mono">16211</span> (testnet P2P). Keep <span class="mono">16110</span> closed — that is the local mining RPC.</p>
+      </div>
+
       <div class="grid c2">
         <div class="card">
           <div class="card-head"><div class="card-title">${icon('ship', 14)} Install on your server</div>

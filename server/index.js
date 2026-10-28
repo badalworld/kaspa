@@ -929,7 +929,14 @@ async function handleApi(req, res, url) {
 
   if (route === 'GET /api/deploy') {
     const files = buildKit(store.config, { port: PORT });
-    return sendJson(res, 200, { files, port: PORT, repo: require('./deploykit').DEFAULT_REPO });
+    const kit = require('./deploykit');
+    return sendJson(res, 200, {
+      files,
+      port: PORT,
+      repo: kit.DEFAULT_REPO,
+      plan: kit.recommendedPlan(store.config),
+      detected: hardwarePlan().checks,
+    });
   }
 
   if (route === 'GET /api/deploy/download') {

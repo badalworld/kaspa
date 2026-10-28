@@ -1,6 +1,16 @@
 # Deploying the Kaspa Mining Console
 
-Generated Wed, 28 Oct 2026 20:27:01 GMT from your current panel configuration.
+Generated Wed, 28 Oct 2026 20:31:12 GMT from your current panel configuration.
+
+## Recommended server for this configuration
+
+| Resource | Recommended | Notes |
+| --- | --- | --- |
+| vCPU | **4** | one core stays free for the node and the panel |
+| RAM | **8 GB** | more is fine; trim the node with `--ram-scale` |
+| Disk | **120 GB** | pruned node, grows with the DAG |
+| Bandwidth | 10 Mbit+ | open port 16111/tcp for mainnet P2P |
+| Miner threads | **3** | leave one vCPU for the operating system |
 
 | Setting | Value |
 | --- | --- |

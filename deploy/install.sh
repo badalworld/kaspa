@@ -42,11 +42,13 @@ if [ -n "$REPO_URL" ]; then
 else
   # Running from inside a checkout: copy everything except local state
   SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  # Local state (config, logs, chain data) stays untouched
+  mkdir -p "$APP_DIR/data"
   if [ "$SRC_DIR" != "$APP_DIR" ]; then
     if command -v rsync >/dev/null 2>&1; then
       rsync -a --exclude data --exclude .git "$SRC_DIR"/ "$APP_DIR"/
     else
-      cp -a "$SRC_DIR"/. "$APP_DIR"/ && rm -rf "$APP_DIR/data" "$APP_DIR/.git"
+      cp -a "$SRC_DIR"/. "$APP_DIR"/ && rm -rf "$APP_DIR/.git"
     fi
   fi
 fi
