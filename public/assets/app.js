@@ -520,6 +520,14 @@ function setTab(tab) {
   view.className = 'view';
   const render = VIEWS[tab];
   if (render) render(view);
+  // Paint with the data we already have instead of waiting for the next poll.
+  if (state.status) {
+    if (tab === 'overview') updateOverview();
+    if (tab === 'node') {
+      updateNodeView();
+      refreshNodeMiniLog();
+    }
+  }
   updateTopbar();
 }
 
