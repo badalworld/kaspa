@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content="Self-hosted Kaspa mining console — run kaspad and kaspa-miner, watch hashrate, earnings and node health." />
+    <title>Kaspa Mining Console</title>
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="shell" id="shell" hidden>
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" width="26" height="26">
+              <path d="M16 2 4 9v14l12 7 12-7V9L16 2Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+              <path d="M11 21V11l10 10V11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span class="brand-text">
+            <strong>KASPA</strong>
+            <small>mining console</small>
+          </span>
+        </div>
+
+        <nav class="nav" id="nav" aria-label="Sections"></nav>
+
+        <div class="sidebar-foot">
+          <div class="net-badge" id="net-badge">mainnet</div>
+          <a class="sidebar-link" href="https://github.com/kaspanet/rusty-kaspa" target="_blank" rel="noreferrer noopener">node docs ↗</a>
+          <span class="version" id="version">v1.0.0</span>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-title">
+            <h1 id="page-title">Overview</h1>
+            <p id="page-sub">Live status of your Kaspa miner</p>
+          </div>
+          <div class="topbar-actions">
+            <span class="conn" id="conn" title="connection">●</span>
+            <button class="btn btn-ghost" id="btn-restart" type="button">Restart</button>
+            <button class="btn btn-ghost danger" id="btn-stop" type="button">Stop</button>
+            <button class="btn btn-primary" id="btn-start" type="button">Start mining</button>
+          </div>
+        </header>
+
+        <div id="banner-slot"></div>
+        <section class="view" id="view" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <div id="boot" class="boot">
+      <div class="boot-inner">
+        <div class="spinner"></div>
+        <p>Starting console…</p>
+      </div>
+    </div>
+
+    <div id="modal-root"></div>
+    <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+
+    <script src="/assets/app.js" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+# Runtime state: config with the password hash, encrypted keystore, logs,
+# downloaded binaries and the kaspad chain database. Never commit this.
+data/
+*.log
+
+# Local environment / secrets
+.env
+.env.local
+
+# Tooling
+node_modules/
+npm-debug.log*
+.DS_Store
+coverage/
+*.tsbuildinfo

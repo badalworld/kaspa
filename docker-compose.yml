@@ -1,0 +1,37 @@
+# Kaspa Mining Console — single-container stack
+# Usage:  docker compose up -d --build
+services:
+  kaspa-console:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MINER_VERSION: v0.2.7
+        NODE_VERSION: v2.1.0
+    image: kaspa-mining-console:latest
+    container_name: kaspa-console
+    restart: unless-stopped
+    ports:
+      - "8080:8080"          # panel (put HTTPS in front of this)
+      - "16111:16111"           # kaspad P2P (needed for a healthy peer count)
+    volumes:
+      - ./data:/app/data        # config, logs, wallet keystore and chain data
+    environment:
+      - DATA_DIR=/app/data
+      - BIN_DIR=/opt/kaspa-bin
+      - TRUST_PROXY=1
+      # Both optional, read from .env when present
+      - DATABASE_URL=${DATABASE_URL:-}
+      - PANEL_PASSWORD=${PANEL_PASSWORD:-}
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+# Mining settings (address, threads, solo vs remote node) live in the panel UI,
+# or in ./data/config.json if you prefer to pre-seed them.
+# Network: mainnet
+# Address: (not set yet)
