@@ -1,0 +1,19 @@
+{
+  "name": "kaspa-mining-console",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Self-hosted Kaspa mining control panel: runs kaspad + kaspa-miner, monitors hashrate, shares, node sync and deployment.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test test/*.test.js",
+    "check": "node --check server/index.js"
+  },
+  "optionalDependencies": {
+    "pg": "^8.11.5"
+  }
+}

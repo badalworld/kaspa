@@ -1,0 +1,29 @@
+[Unit]
+Description=Kaspa Mining Console
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kaspa
+Group=kaspa
+WorkingDirectory=/opt/kaspa-console
+Environment=NODE_ENV=production
+Environment=PANEL_PORT=8080
+Environment=DATA_DIR=/opt/kaspa-console/data
+Environment=TRUST_PROXY=1
+ExecStart=/usr/bin/node /opt/kaspa-console/server/index.js
+Restart=always
+RestartSec=5
+# Allow kaspad to shut down cleanly (it needs time to flush RocksDB)
+KillSignal=SIGINT
+TimeoutStopSec=60
+LimitNOFILE=65535
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+
+# Network: mainnet
+# Mode: solo
